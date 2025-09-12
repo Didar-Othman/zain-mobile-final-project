@@ -8,11 +8,20 @@ export default function Index() {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        gap: 10,
+        padding: 20,
+        flexDirection: "row",
+        flexWrap: "wrap",
       }}
     >
       <Link
         href="/(auth)/login"
-        style={{ padding: 10, backgroundColor: "blue" }}
+        style={{
+          padding: 10,
+          backgroundColor: "black",
+          borderRadius: 10,
+          alignItems: "center",
+        }}
       >
         <Text
           style={{
@@ -22,6 +31,17 @@ export default function Index() {
         >
           Go to Login
         </Text>
+      </Link>
+      <Link
+        href="/(auth)/register"
+        style={{
+          padding: 10,
+          backgroundColor: "black",
+          borderRadius: 10,
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ color: "white", fontSize: 18 }}>Go to Register</Text>
       </Link>
     </View>
   );

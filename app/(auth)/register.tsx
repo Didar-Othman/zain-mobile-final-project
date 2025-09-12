@@ -15,11 +15,11 @@ export default function login() {
   const [password, setPassword] = useState("Dd@Zain@2025");
   const [Loading, setLoading] = useState(false);
 
-  const LoginHandler = async () => {
+  const RegisterHandler = async () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}/auth/login`,
+        `${process.env.EXPO_PUBLIC_API_URL}/auth/register`,
         {
           method: "POST",
           headers: {
@@ -33,14 +33,14 @@ export default function login() {
       );
       const data = await response.json();
       if (data?.success) {
-        alert("Login successful");
+        alert("Register successful");
         alert(data?.token);
       } else {
-        Alert.alert("Login failed", data?.message || "Unknown error");
+        Alert.alert("Register failed", data?.message || "Unknown error");
       }
     } catch (error) {
       console.log(error);
-      Alert.alert("Error", "An error occurred during login");
+      Alert.alert("Error", "An error occurred during register");
     } finally {
       setLoading(false);
     }
@@ -52,8 +52,8 @@ export default function login() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View style={styles.formContainer}>
-        <Text style={styles.title}>Welcome Back</Text>
-        <Text style={styles.subtitle}>Sign in to your account</Text>
+        <Text style={styles.title}>Welcome</Text>
+        <Text style={styles.subtitle}>Create your account</Text>
 
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Email</Text>
@@ -81,12 +81,12 @@ export default function login() {
         </View>
 
         <Pressable
-          onPress={LoginHandler}
+          onPress={RegisterHandler}
           style={[styles.button, Loading && styles.buttonDisabled]}
           disabled={Loading}
         >
           <Text style={styles.buttonText}>
-            {Loading ? "Logging in..." : "Sign In"}
+            {Loading ? "Registering..." : "Sign In"}
           </Text>
         </Pressable>
       </View>
