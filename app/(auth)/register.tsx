@@ -1,5 +1,4 @@
 import { router } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import React, { useState } from "react";
 import {
   Alert,
@@ -11,39 +10,17 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { useStore } from "../../store/auth";
+
 export default function login() {
-  const { setIsLoggedIn, setProfile }: any = useStore();
   const [email, setEmail] = useState("info@didar.dev");
   const [password, setPassword] = useState("Dd@Zain@2025");
   const [Loading, setLoading] = useState(false);
 
-  const getProfile = async () => {
-    const token = await SecureStore.getItemAsync("token");
-    const response = await fetch(
-      `${process.env.EXPO_PUBLIC_API_URL}/auth/profile`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const data = await response.json();
-    if (data?.success) {
-      if (data?.data?.id) {
-        setIsLoggedIn(true);
-        setProfile(data?.data);
-      }
-    }
-  };
-
-  const LoginHandler = async () => {
+  const RegisterHandler = async () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}/auth/login`,
+        `${process.env.EXPO_PUBLIC_API_URL}/auth/register`,
         {
           method: "POST",
           headers: {
@@ -57,23 +34,18 @@ export default function login() {
       );
       const data = await response.json();
       if (data?.success) {
-        await SecureStore.setItemAsync("token", data?.token);
-        Alert.alert("Login successful", "Please login to your account", [
+        Alert.alert("Register successful", "Please login to your account", [
           {
-            text: "OK",
-            onPress: async () => {
-              await getProfile().then(() => {
-                router.replace("/");
-              });
-            },
+            text: "Go to Login",
+            onPress: () => router.replace("/login"),
           },
         ]);
       } else {
-        Alert.alert("Login failed", data?.message || "Unknown error");
+        Alert.alert("Register failed", data?.message || "Unknown error");
       }
     } catch (error) {
       console.log(error);
-      Alert.alert("Error", "An error occurred during login");
+      Alert.alert("Error", "An error occurred during register");
     } finally {
       setLoading(false);
     }
@@ -85,8 +57,8 @@ export default function login() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View style={styles.formContainer}>
-        <Text style={styles.title}>Welcome Back</Text>
-        <Text style={styles.subtitle}>Sign in to your account</Text>
+        <Text style={styles.title}>Welcome</Text>
+        <Text style={styles.subtitle}>Create your account</Text>
 
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Email</Text>
@@ -114,12 +86,12 @@ export default function login() {
         </View>
 
         <Pressable
-          onPress={LoginHandler}
+          onPress={RegisterHandler}
           style={[styles.button, Loading && styles.buttonDisabled]}
           disabled={Loading}
         >
           <Text style={styles.buttonText}>
-            {Loading ? "Logging in..." : "Sign In"}
+            {Loading ? "Registering..." : "Sign In"}
           </Text>
         </Pressable>
       </View>
