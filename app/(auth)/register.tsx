@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
@@ -33,8 +34,12 @@ export default function login() {
       );
       const data = await response.json();
       if (data?.success) {
-        alert("Register successful");
-        alert(data?.token);
+        Alert.alert("Register successful", "Please login to your account", [
+          {
+            text: "Go to Login",
+            onPress: () => router.replace("/login"),
+          },
+        ]);
       } else {
         Alert.alert("Register failed", data?.message || "Unknown error");
       }

@@ -1,3 +1,5 @@
+import { router } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import React, { useState } from "react";
 import {
   Alert,
@@ -9,11 +11,33 @@ import {
   TextInput,
   View,
 } from "react-native";
-
+import { useStore } from "../../store/auth";
 export default function login() {
+  const { setIsLoggedIn, setProfile }: any = useStore();
   const [email, setEmail] = useState("info@didar.dev");
   const [password, setPassword] = useState("Dd@Zain@2025");
   const [Loading, setLoading] = useState(false);
+
+  const getProfile = async () => {
+    const token = await SecureStore.getItemAsync("token");
+    const response = await fetch(
+      `${process.env.EXPO_PUBLIC_API_URL}/auth/profile`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const data = await response.json();
+    if (data?.success) {
+      if (data?.data?.id) {
+        setIsLoggedIn(true);
+        setProfile(data?.data);
+      }
+    }
+  };
 
   const LoginHandler = async () => {
     setLoading(true);
@@ -33,8 +57,17 @@ export default function login() {
       );
       const data = await response.json();
       if (data?.success) {
-        alert("Login successful");
-        alert(data?.token);
+        await SecureStore.setItemAsync("token", data?.token);
+        Alert.alert("Login successful", "Please login to your account", [
+          {
+            text: "OK",
+            onPress: async () => {
+              await getProfile().then(() => {
+                router.replace("/");
+              });
+            },
+          },
+        ]);
       } else {
         Alert.alert("Login failed", data?.message || "Unknown error");
       }
