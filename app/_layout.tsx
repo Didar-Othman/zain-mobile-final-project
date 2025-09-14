@@ -1,3 +1,4 @@
+import { useCategories } from "@/store/categories";
 import { Stack } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
@@ -6,9 +7,8 @@ import { useStore } from "../store/auth";
 SplashScreen.preventAutoHideAsync(); /// prevent auto hide of splash screen
 export default function RootLayout() {
   const { setIsLoggedIn, setProfile }: any = useStore();
-
-  /// Function to check if the user is logged in
-  const checkLogin = async () => {
+  const { setCategories }: any = useCategories();
+  const checkauth = async () => {
     const token = await SecureStore.getItemAsync("token");
     const response = await fetch(
       `${process.env.EXPO_PUBLIC_API_URL}/auth/profile`,
@@ -29,8 +29,26 @@ export default function RootLayout() {
     }
     SplashScreen.hideAsync();
   };
+  const FetchGateries = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_API_URL}/categories`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      if (data?.success) {
+        setCategories(data?.categories);
+      }
+    } catch (error) {}
+  };
   useEffect(() => {
-    checkLogin();
+    checkauth();
+    FetchGateries();
   }, []);
 
   return <Stack />;
