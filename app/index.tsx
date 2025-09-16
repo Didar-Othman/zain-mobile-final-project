@@ -1,8 +1,8 @@
-import { Link, router } from "expo-router";
-import * as SecureStore from "expo-secure-store";
-import { useStore } from "../store/auth";
-import { Alert, FlatList, Pressable, Text, View } from "react-native";
 import { useCategories } from "@/store/categories";
+import { Link, router, Stack } from "expo-router";
+import * as SecureStore from "expo-secure-store";
+import { Alert, FlatList, Pressable, Text, View } from "react-native";
+import { useStore } from "../store/auth";
 
 export default function Index() {
   const { profile }: any = useStore();
@@ -28,94 +28,89 @@ export default function Index() {
     <View
       style={{
         gap: 10,
-        padding: 20,
+        paddingHorizontal: 20,
+        paddingTop: 10,
         flexDirection: "column",
       }}
     >
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 10,
-          padding: 20,
-          flexDirection: "row",
-          flexWrap: "wrap",
+      <Stack.Screen
+        options={{
+          headerTitle: "",
+          headerLeft() {
+            return (
+              <View
+                style={{
+                  flexDirection: "column",
+                  gap: 2,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: "bold",
+                  }}
+                >
+                  Welcome
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {profile?.id ? profile?.FirstName : "Guest"}
+                </Text>
+              </View>
+            );
+          },
+          headerRight() {
+            return (
+              <View
+                style={{
+                  flexDirection: "column",
+                  gap: 2,
+                }}
+              >
+                {profile?.id ? (
+                  <Pressable
+                    style={{
+                      backgroundColor: "black",
+                      padding: 10,
+                      borderRadius: 10,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    onPress={LogOutHandler}
+                  >
+                    <Text
+                      style={{
+                        color: "white",
+                      }}
+                    >
+                      Log Out
+                    </Text>
+                  </Pressable>
+                ) : (
+                  <Link
+                    href="/(auth)/login"
+                    style={{
+                      backgroundColor: "black",
+                      padding: 10,
+                      borderRadius: 10,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "white",
+                    }}
+                  >
+                    Login
+                  </Link>
+                )}
+              </View>
+            );
+          },
         }}
-      >
-        {profile?.id ? (
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 10,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: "bold",
-              }}
-            >
-              Welcome {profile?.email}
-            </Text>
-            <Pressable
-              style={{
-                backgroundColor: "black",
-                padding: 10,
-                borderRadius: 10,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              onPress={LogOutHandler}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 18,
-                }}
-              >
-                Log Out
-              </Text>
-            </Pressable>
-          </View>
-        ) : (
-          <View>
-            <Link
-              href="/(auth)/login"
-              style={{
-                padding: 10,
-                backgroundColor: "black",
-                borderRadius: 10,
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 18,
-                }}
-              >
-                Go to Login
-              </Text>
-            </Link>
-            <Link
-              href="/(auth)/register"
-              style={{
-                padding: 10,
-                backgroundColor: "black",
-                borderRadius: 10,
-                alignItems: "center",
-              }}
-            >
-              <Text style={{ color: "white", fontSize: 18 }}>
-                Go to Register
-              </Text>
-            </Link>
-          </View>
-        )}
-      </View>
+      />
+
       <FlatList
         data={categories}
         keyExtractor={(item) => item.id.toString()}

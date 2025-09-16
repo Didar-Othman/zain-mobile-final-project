@@ -21,6 +21,7 @@ export default function RootLayout() {
       }
     );
     const data = await response.json();
+    console.log(JSON.stringify(data));
     if (data?.success) {
       if (data?.data?.id) {
         setIsLoggedIn(true);
